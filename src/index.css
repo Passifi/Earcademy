@@ -54,6 +54,23 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.interval-selection-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.interval-selection-container .row {
+  display: flex;
+  gap: 0.2rem;
+  flex-direction: row;
+  align-items: start;
+}
+
+.interval-selection-container .column {
+  flex-grow: 1;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -66,3 +83,5 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+
