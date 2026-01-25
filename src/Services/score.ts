@@ -1,3 +1,5 @@
+import  { Note } from "./notes";
+
 export class Guess {
     interval: number;
     correct: boolean;
@@ -13,9 +15,11 @@ export class Guess {
 export class Scorer { 
     guesses: Guess[]
     currentInterval: number; 
+    currentNote!: Note; 
     constructor() {
         this.guesses = []
-        this.currentInterval = 0
+        this.currentInterval = Math.round(Math.random()*12)
+        this.generateNote(3,6) 
     }
 
     setInterval(interval: number) {
@@ -23,14 +27,29 @@ export class Scorer {
     }
 
     checkAnswer(answer: number) {
-        this.guesses.push(new Guess(this.currentInterval, this.currentInterval === answer))
-        return this.guesses[-1].correct
+      const currentGuess = new Guess(this.currentInterval, this.currentInterval === answer)
+        this.guesses.push(currentGuess)
+        if(currentGuess.correct) {
+          this.generateChallenge()
+        }
+
+        return this.guesses.at(-1)!.correct
+    }
+
+    generateChallenge() {
+      this.generateNote(3,5);
+      this.generateInterval(12)
+    }
+
+    generateNote(minOctave: number,maxOctave: number) {
+      this.currentNote = new Note(Math.round(Math.random()*12),
+                                  Math.round(Math.random()*(maxOctave - minOctave+1)));
     }
 
     generateInterval(max: number) {
         max = max > 12 ? 12 : max;
         max = max < 0 ? 0 : max;
-        return Math.round(Math.random()*max)
+        this.currentInterval = Math.round(Math.random()*max)
     }
 
     getScore() {
