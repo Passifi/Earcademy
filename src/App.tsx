@@ -20,14 +20,10 @@ function App() {
     synth.triggerAttackRelease(note.getNote(), "8n")
  
   }
-  
-
 
   return (
     <>
       <p>{scorer.getScore()}</p>
-
-
       <button onClick={()=>{playInterval(note)}} >Play</button>
       <IntervalSelectionMatrix clickButton={(n: number) => {console.log(n)}}/> 
     </>
