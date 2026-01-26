@@ -1,0 +1,29 @@
+import * as Tone from "tone"
+
+export default function PluckSynthSetup() {
+  
+  const synth = new Tone.PluckSynth().toDestination();
+  synth.now() 
+  function playNote() {
+    synth.triggerAttackRelease("C4", "8n");
+  }
+  return (
+
+    <>
+
+      <input type="range" />
+      <input type="range" />
+      <input type="range" />
+      <input type="range" />
+      <input type="range" />
+
+      <button> Test </button>
+
+    </>
+
+  )
+
+
+};
+
+

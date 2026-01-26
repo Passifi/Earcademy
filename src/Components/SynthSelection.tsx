@@ -34,6 +34,9 @@ export default function SynthSelection(props: SynthSelectionProps) {
     }
     else if (val === "Pluck") {
       synth = new Tone.PluckSynth();
+      synth.dampening = 6000;
+      synth.resonance = 1.0
+      synth.release = 0.4;
 
     }
     else

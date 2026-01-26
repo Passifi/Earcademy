@@ -6,9 +6,13 @@ import IntervalSelectionMatrix from './Components/IntervalSelectionMatrix';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Synths } from './Components/SynthSelection';
 import SynthSelection from './Components/SynthSelection';
+import PluckSynthSetup from './Components/PluckSynthSetup';
 function App() {
-  let synth: Synths = new Tone.FMSynth().toDestination();
-  Tone.start()
+  
+  const refSynth  = new Tone.PluckSynth().toDestination();
+  refSynth.resonance = 1.0;
+  refSynth.release = 0.9;
+  let synth: Synths = refSynth
 
   const scorer = useMemo(() => new Scorer(), [])
   const [score, setScore] = useState(scorer.getScore())
@@ -18,6 +22,8 @@ function App() {
     synth.toDestination()
   }
   function playInterval(note: Note) {
+   
+    Tone.start()
     playNote(note, 12);
     const nextNote = note.addInterval(scorer.currentInterval)
     setTimeout(() => playNote(nextNote, 12), 300)

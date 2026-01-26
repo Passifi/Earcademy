@@ -1,6 +1,6 @@
 const IntervalNames = [
   "Prime", "minor second", "major second", "minor third", "major third",
-  "fourth", "tritonus", "fifth", "minor sixth", "major sixt", "minor seventh",
+  "fourth", "tritonus", "fifth", "minor sixth", "major sixth", "minor seventh",
   "major seventh", "octave"
 ]
 
