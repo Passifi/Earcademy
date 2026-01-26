@@ -4,14 +4,19 @@ import { Note } from './Services/notes';
 import { Scorer, Guess } from "./Services/score"
 import IntervalSelectionMatrix from './Components/IntervalSelectionMatrix';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import type { Synths } from './Components/SynthSelection';
+import SynthSelection from './Components/SynthSelection';
 function App() {
-  const synth = new Tone.FMSynth().toDestination();
+  let synth: Synths = new Tone.FMSynth().toDestination();
   Tone.start()
 
-  const scorer = useMemo(()=> new Scorer(), []) 
+  const scorer = useMemo(() => new Scorer(), [])
   const [score, setScore] = useState(scorer.getScore())
 
-  
+  function synthSetter(newSynth: Synths) {
+    synth = newSynth;
+    synth.toDestination()
+  }
   function playInterval(note: Note) {
     playNote(note, 12);
     const nextNote = note.addInterval(scorer.currentInterval)
@@ -37,6 +42,7 @@ function App() {
       <p>{score}</p>
       <button onClick={() => { playInterval(scorer.currentNote) }} >Play</button>
       <IntervalSelectionMatrix clickButton={(n: number) => { checkAnswer(n) }} />
+      <SynthSelection synthSetCallback={synthSetter} />
     </>
   )
 }
