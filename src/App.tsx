@@ -5,9 +5,11 @@ import { Scorer } from "./Services/score"
 import IntervalSelectionMatrix from './Components/IntervalSelectionMatrix';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Synth } from './classes/Synth';
-function App() {
+import AnalysisGraph from './Components/AnalysisGraph';
+ 
 
-  const synth = new Synth();
+function App() {
+   const synth = new Synth();
   const [feedback, setFeedback] = useState<string | undefined>()
   const [feedbackClass, setFeedbackClass] = useState<string>("right")
   synth.setADSR({ attack: 0.01, decay: 0.5, sustain: 0.3, release: 2.9 });
@@ -40,6 +42,7 @@ function App() {
 
   return (
     <>
+      <AnalysisGraph guesses={scorer.guesses}/>
       <p className={"feedback " + feedbackClass}>
 
         {feedback}
