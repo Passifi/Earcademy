@@ -1,54 +1,53 @@
 import './App.css'
 import * as Tone from "tone"
 import { Note } from './Services/notes';
-import { Scorer, Guess } from "./Services/score"
+import { Scorer } from "./Services/score"
 import IntervalSelectionMatrix from './Components/IntervalSelectionMatrix';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { Synths } from './Components/SynthSelection';
-import SynthSelection from './Components/SynthSelection';
-import PluckSynthSetup from './Components/PluckSynthSetup';
+import { Synth } from './classes/Synth';
 function App() {
-  
-  const refSynth  = new Tone.PluckSynth().toDestination();
-  refSynth.resonance = 1.0;
-  refSynth.release = 0.9;
-  let synth: Synths = refSynth
 
+  const synth = new Synth();
+  const [feedback, setFeedback] = useState<string | undefined>()
+  const [feedbackClass, setFeedbackClass] = useState<string>("right")
+  synth.setADSR({ attack: 0.01, decay: 0.5, sustain: 0.3, release: 2.9 });
   const scorer = useMemo(() => new Scorer(), [])
   const [score, setScore] = useState(scorer.getScore())
 
-  function synthSetter(newSynth: Synths) {
-    synth = newSynth;
-    synth.toDestination()
-  }
-  function playInterval(note: Note) {
-   
-    Tone.start()
-    playNote(note, 12);
+
+  async function playInterval(note: Note) {
+    await Tone.start();
+    playNote(note, 8);
     const nextNote = note.addInterval(scorer.currentInterval)
-    setTimeout(() => playNote(nextNote, 12), 300)
+    setTimeout(() => playNote(nextNote, 8), 300)
 
   }
   function playNote(note: Note, duration: number) {
-    synth.triggerAttackRelease(note.getNote(), "8n")
-
+    synth.setTriggerRelease(note, duration);
   }
 
   function checkAnswer(interval: number) {
     if (scorer.checkAnswer(interval)) {
       setScore(scorer.getScore())
+      setFeedback("That's right")
+      setFeedbackClass("right")
     }
     else {
-      console.log("False!");
+      setFeedback("Wrong guess. Try again!")
+      setFeedbackClass("wrong")
     }
   }
 
   return (
     <>
+      <p className={"feedback " + feedbackClass}>
+
+        {feedback}
+
+      </p >
       <p>{score}</p>
-      <button onClick={() => { playInterval(scorer.currentNote) }} >Play</button>
+      <button onClick={async () => { playInterval(scorer.currentNote) }} >Play</button>
       <IntervalSelectionMatrix clickButton={(n: number) => { checkAnswer(n) }} />
-      <SynthSelection synthSetCallback={synthSetter} />
     </>
   )
 }

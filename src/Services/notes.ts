@@ -5,15 +5,9 @@ const notes = ["C", "Db", "D", "Eb", "E",
 export class Note {
   baseNote: number;
   octave: number;
-  constructor(base: number = -1, octave: number = -1
-  ) {
-
+  constructor(base: number, octave: number) {
     this.baseNote = base;
     this.octave = octave;
-    if (base == -1) {
-      this.baseNote = Math.ceil(Math.random() * 12)
-      this.octave = 4
-    }
 
   }
   getNote() {
@@ -26,7 +20,6 @@ export class Note {
     let newNote = this.baseNote
     newNote += interval
     if (newNote >= 12) {
-
       newNote = newNote - 12
       octave = 1
     }

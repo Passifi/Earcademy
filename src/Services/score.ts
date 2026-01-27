@@ -7,19 +7,21 @@ export class Guess {
   constructor(interval: number, correct: boolean) {
     this.interval = interval;
     this.correct = correct
-
   }
 }
 
+const basePoints = 100;
+const pointDeduction = 10;
 
 export class Scorer {
   guesses: Guess[]
   currentInterval: number;
   currentNote!: Note;
+
   constructor() {
     this.guesses = []
     this.currentInterval = Math.round(Math.random() * 12)
-    this.generateNote(3, 6)
+    this.generateNote(3, 5)
   }
 
   setInterval(interval: number) {
@@ -42,7 +44,7 @@ export class Scorer {
   }
 
   generateNote(minOctave: number, maxOctave: number) {
-    this.currentNote = new Note(Math.round(Math.random() * 12),
+    this.currentNote = new Note(Math.floor(Math.random() * 12),
       Math.round(Math.random() * (maxOctave - minOctave + 1) + minOctave));
   }
 
@@ -58,6 +60,7 @@ export class Scorer {
     let score = 0;
     let streak = false;
     let streakCounter = 0;
+    let currentPoints = basePoints;
     for (const el of this.guesses) {
       if (el.correct) {
         if (streak) {
@@ -67,14 +70,15 @@ export class Scorer {
         else {
           streak = true;
           streakCounter = 1;
-          score += pointsPerGuess;
+          score += currentPoints;
+          currentPoints = basePoints;
         }
       }
       else {
         streak = false;
+        currentPoints = currentPoints >= pointDeduction ? currentPoints - pointDeduction : 0;
       }
     }
     return score;
   }
-
 };
