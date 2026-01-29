@@ -89,6 +89,34 @@ button:focus-visible {
   }
 }
 
+.analyze-container ul {
+  list-style: none;
+  display: flex;
+  gap: 1.2rem;
+  align-items: end;
+}
+
+.analyze-container li {
+  background-color: grey;
+  padding: 0.8rem;
+  border-radius: 0.3rem;
+  transition: 0.3s background-color;
+}
+
+
+.analyze-container li.badRatio:hover {
+  background-color: #f03;
+}
+
+.analyze-container li.goodRatio:hover {
+  background-color: #0f0;
+}
+
+.analyze-container li.neutral:hover {
+  background-color: #aa0;
+}
+
+
 .right {
   color: green;
 }

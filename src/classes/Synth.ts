@@ -32,7 +32,6 @@ export class Synth {
   }
 
   setADSR(values: Envelope) {
-    console.log(values)
     this.instrument.envelope.attack = values.attack;
     this.instrument.envelope.decay = values.decay;
     this.instrument.envelope.release = values.release;
@@ -44,7 +43,6 @@ export class Synth {
   }
 
   setTriggerRelease(note: Note, duration: number) {
-    Tone.start();
     this.instrument.triggerAttackRelease(note.getNote(), `${duration}n`);
   }
 

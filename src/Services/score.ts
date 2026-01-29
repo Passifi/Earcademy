@@ -1,3 +1,4 @@
+import { RandomGenerator } from "../classes/RandomGenerator";
 import { Note } from "./notes";
 
 export class Guess {
@@ -10,14 +11,23 @@ export class Guess {
   }
 }
 
+
 const basePoints = 100;
 const pointDeduction = 10;
+
+enum Modes {
+  IntervalUp,
+  IntervalDown,
+  IntervalUpDown,
+  Simultanous
+}
 
 export class Scorer {
   guesses: Guess[]
   currentInterval: number;
   currentNote!: Note;
-
+  range: number = 12;
+  curentMode = Modes.IntervalDown
   constructor() {
     this.guesses = []
     this.currentInterval = Math.round(Math.random() * 12)
@@ -29,7 +39,8 @@ export class Scorer {
   }
 
   checkAnswer(answer: number) {
-    const currentGuess = new Guess(this.currentInterval, this.currentInterval === answer)
+    console.log(this.currentInterval)
+    const currentGuess = new Guess(Math.abs(this.currentInterval), Math.abs(this.currentInterval) === answer)
     this.guesses.push(currentGuess)
     if (currentGuess.correct) {
       this.generateChallenge()
@@ -39,8 +50,10 @@ export class Scorer {
   }
 
   generateChallenge() {
+    var min = this.curentMode == Modes.IntervalUpDown || this.curentMode == Modes.IntervalDown ? this.range * -1 : 0;
+    var max = this.curentMode == Modes.IntervalUpDown || this.curentMode == Modes.IntervalUp ? this.range : 0;
     this.generateNote(3, 5);
-    this.generateInterval(12)
+    this.generateInterval(min, max)
   }
 
   generateNote(minOctave: number, maxOctave: number) {
@@ -48,10 +61,10 @@ export class Scorer {
       Math.round(Math.random() * (maxOctave - minOctave + 1) + minOctave));
   }
 
-  generateInterval(max: number) {
-    max = max > 12 ? 12 : max;
-    max = max < 0 ? 0 : max;
-    this.currentInterval = Math.round(Math.random() * max)
+  generateInterval(min: number, max: number) {
+    console.log(min, max)
+    this.currentInterval = RandomGenerator.randomValue(min, max)
+
   }
 
   getScore() {

@@ -11,8 +11,6 @@ export class Note {
 
   }
   getNote() {
-    const result = notes[this.baseNote] + this.octave
-    console.log(`${result}: ${this.baseNote} ${this.octave}`)
     return notes[this.baseNote] + this.octave
   }
   addInterval(interval: number) {
@@ -27,7 +25,6 @@ export class Note {
       newNote = 12 + newNote
       octave = -1
     }
-
     return new Note(newNote, this.octave + octave)
   }
 };
