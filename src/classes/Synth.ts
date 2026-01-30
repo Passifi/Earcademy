@@ -27,7 +27,7 @@ export class Synth {
     this.instrument = synth
   }
 
-  setFilterCutoff() {
+  setFilterCutoff(frequency: number) {
 
   }
 
@@ -43,7 +43,8 @@ export class Synth {
   }
 
   setTriggerRelease(note: Note, duration: number) {
-    this.instrument.triggerAttackRelease(note.getNote(), `${duration}n`);
+    const now = Tone.now(); // without this synth seems to operate on it's on timeline... 
+    this.instrument.triggerAttackRelease(note.getNote(), `${duration}n`, now);
   }
 
 

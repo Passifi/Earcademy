@@ -1,3 +1,4 @@
+import { warn } from "tone/build/esm/core/util/Debug";
 import { RandomGenerator } from "../classes/RandomGenerator";
 import { Note } from "./notes";
 
@@ -15,11 +16,11 @@ export class Guess {
 const basePoints = 100;
 const pointDeduction = 10;
 
-enum Modes {
-  IntervalUp,
-  IntervalDown,
-  IntervalUpDown,
-  Simultanous
+export const Modes = {
+  IntervalUp: 1,
+  IntervalDown: 2,
+  IntervalUpDown: 4,
+  Simultanous: 8
 }
 
 export class Scorer {
@@ -28,8 +29,10 @@ export class Scorer {
   currentNote!: Note;
   range: number = 12;
   curentMode = Modes.IntervalDown
+  publicGuesses: Guess[];
   constructor() {
     this.guesses = []
+    this.publicGuesses = []
     this.currentInterval = Math.round(Math.random() * 12)
     this.generateNote(3, 5)
   }
@@ -39,10 +42,10 @@ export class Scorer {
   }
 
   checkAnswer(answer: number) {
-    console.log(this.currentInterval)
     const currentGuess = new Guess(Math.abs(this.currentInterval), Math.abs(this.currentInterval) === answer)
     this.guesses.push(currentGuess)
     if (currentGuess.correct) {
+      this.publicGuesses = [...this.guesses]
       this.generateChallenge()
     }
 
@@ -62,9 +65,12 @@ export class Scorer {
   }
 
   generateInterval(min: number, max: number) {
-    console.log(min, max)
     this.currentInterval = RandomGenerator.randomValue(min, max)
 
+  }
+
+  get guessData() {
+    return this.publicGuesses
   }
 
   getScore() {

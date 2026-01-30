@@ -4,6 +4,8 @@ export const IntervalNames = [
   "major seventh", "octave"
 ]
 
+const intervalrange = 4;
+
 interface IntervalSelectionProps {
   clickButton: (e: number) => void
 }
@@ -11,28 +13,22 @@ interface IntervalSelectionProps {
 export default function IntervalSelectionMatrix(props: IntervalSelectionProps) {
   return (
     <div className="interval-selection-container">
-      <div className="row">
-        {IntervalNames.slice(0, 5).map((el, index) => (
-          <div key={index} className="column">
-            <button onClick={() => props.clickButton(index)}>{el}</button>
+      {
+        Array.from({ length: 3 }).map((_, rangeMultiplier) =>
+        (
+          <div className="row">
+            {IntervalNames.slice(rangeMultiplier * intervalrange, intervalrange * (1 + rangeMultiplier)).map((el, index) => (
+              <div key={index} className="column">
+                <button onClick={() => props.clickButton(index)}>{el}</button>
+              </div>
+            ))}
+
+
           </div>
-        ))}
-      </div>
-      <div className="row">
-        {IntervalNames.slice(5, 10).map((el, index) => (
-          <div key={index + 5} className="column">
-            <button onClick={() => props.clickButton(index + 5)}>{el}</button>
-          </div>
-        ))}
-      </div>
-      <div className="row">
-        {IntervalNames.slice(10, 13).map((el, index) => (
-          <div key={index + 10} className="column">
-            <button onClick={() => props.clickButton(index + 10)}>{el}</button>
-          </div>
-        ))}
-      </div>
+        ))
+
+
+      }
     </div>
   )
 }
-
