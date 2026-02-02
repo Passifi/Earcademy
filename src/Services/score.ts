@@ -5,10 +5,11 @@ import { Note } from "./notes";
 export class Guess {
   interval: number;
   correct: boolean;
-
+  mode: number;
   constructor(interval: number, correct: boolean) {
     this.interval = interval;
     this.correct = correct
+    this.mode = Modes.IntervalUp;
   }
 }
 
@@ -28,7 +29,7 @@ export class Scorer {
   currentInterval: number;
   currentNote!: Note;
   range: number = 12;
-  curentMode = Modes.IntervalDown
+  currentMode: number = 2
   publicGuesses: Guess[];
   constructor() {
     this.guesses = []
@@ -53,8 +54,8 @@ export class Scorer {
   }
 
   generateChallenge() {
-    var min = this.curentMode == Modes.IntervalUpDown || this.curentMode == Modes.IntervalDown ? this.range * -1 : 0;
-    var max = this.curentMode == Modes.IntervalUpDown || this.curentMode == Modes.IntervalUp ? this.range : 0;
+    var min = this.currentMode == Modes.IntervalUpDown || this.currentMode == Modes.IntervalDown ? this.range * -1 : 0;
+    var max = this.currentMode == Modes.IntervalUpDown || this.currentMode == Modes.IntervalUp ? this.range : 0;
     this.generateNote(3, 5);
     this.generateInterval(min, max)
   }
@@ -71,6 +72,10 @@ export class Scorer {
 
   get guessData() {
     return this.publicGuesses
+  }
+
+  setGameMode(newMode: number) {
+    this.currentMode = newMode;
   }
 
   getScore() {

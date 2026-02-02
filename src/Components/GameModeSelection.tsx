@@ -6,7 +6,7 @@ interface GameModeSelection {
 }
 
 
-export default function GameModeSelection() {
+export default function GameModeSelection(props: GameModeSelection) {
 
 
   return (
@@ -16,14 +16,14 @@ export default function GameModeSelection() {
 
         {(Object.keys(Modes) as Array<keyof typeof Modes>).map(el =>
         (
-          <li><button onClick={() => { console.log(Modes[el]) }}>{el}</button> </li>
+          <li><button onClick={() => { props.setModeCallback(Modes[el]) }}>{el}</button> </li>
         )
 
         )}
 
       </ul>
 
-    </div>
+    </div >
   )
 
 

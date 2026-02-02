@@ -11,6 +11,7 @@ interface IntervalSelectionProps {
 }
 
 export default function IntervalSelectionMatrix(props: IntervalSelectionProps) {
+
   return (
     <div className="interval-selection-container">
       {
@@ -18,9 +19,7 @@ export default function IntervalSelectionMatrix(props: IntervalSelectionProps) {
         (
           <div className="row">
             {IntervalNames.slice(rangeMultiplier * intervalrange, intervalrange * (1 + rangeMultiplier)).map((el, index) => (
-              <div key={index} className="column">
-                <button onClick={() => props.clickButton(index)}>{el}</button>
-              </div>
+              <button onClick={() => props.clickButton(index)}>{el}</button>
             ))}
 
 

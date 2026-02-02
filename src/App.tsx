@@ -8,18 +8,17 @@ import { Synth } from './classes/Synth';
 import AnalysisGraph from './Components/AnalysisGraph';
 import GameModeSelection from './Components/GameModeSelection';
 
-
 function App() {
-  const synth = useRef(new Synth())
+  const synth = useRef<Synth>(new Synth());
   const [feedback, setFeedback] = useState<string | undefined>()
   const [feedbackClass, setFeedbackClass] = useState<string>("right")
   synth.current.setADSR({ attack: 0.01, decay: 0.5, sustain: 0.3, release: 2.9 });
-  const scorer = useMemo(() => new Scorer(), [])
-  const [score, setScore] = useState(scorer.getScore())
+  const scorer = useRef(new Scorer())
+  const [score, setScore] = useState(scorer.current.getScore())
   async function playInterval(note: Note) {
     await Tone.start();
     playNote(note, 8);
-    const nextNote = note.addInterval(scorer.currentInterval)
+    const nextNote = note.addInterval(scorer.current.currentInterval)
     setTimeout(() => playNote(nextNote, 8), 300) // this is probably an issue
   }
   function playNote(note: Note, duration: number) {
@@ -27,8 +26,8 @@ function App() {
   }
 
   function checkAnswer(interval: number) {
-    if (scorer.checkAnswer(interval)) {
-      setScore(scorer.getScore())
+    if (scorer.current.checkAnswer(interval)) {
+      setScore(scorer.current.getScore())
       setFeedback("That's right")
       setFeedbackClass("right")
     }
@@ -38,16 +37,17 @@ function App() {
     }
   }
 
+
   return (
     <>
-      <AnalysisGraph guesses={scorer.guessData} />
+      <AnalysisGraph guesses={scorer.current.guessData} />
       <p className={"feedback " + feedbackClass}>
         {feedback}
       </p >
       <p>{score}</p>
-      <button onClick={async () => { await playInterval(scorer.currentNote) }} >Play</button>
+      <button onClick={async () => { await playInterval(scorer.current.currentNote) }} >Play</button>
       <IntervalSelectionMatrix clickButton={(n: number) => { checkAnswer(n) }} />
-      <GameModeSelection />
+      <GameModeSelection setModeCallback={(m) => scorer.current.setGameMode(m)} />
     </>
   )
 }
