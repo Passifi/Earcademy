@@ -4,22 +4,28 @@ export const IntervalNames = [
   "major seventh", "octave"
 ]
 
-const intervalrange = 4;
 
 interface IntervalSelectionProps {
+
   clickButton: (e: number) => void
 }
 
 export default function IntervalSelectionMatrix(props: IntervalSelectionProps) {
+  const rows = [
+    IntervalNames.slice(0, 4).map((el, index) => ({ title: el, value: index })),
 
+    IntervalNames.slice(4, 8).map((el, index) => ({ title: el, value: index + 4 })),
+    IntervalNames.slice(8, 13).map((el, index) => ({ title: el, value: index + 8 })),
+  ]
+  console.log(rows)
   return (
     <div className="interval-selection-container">
       {
-        Array.from({ length: 3 }).map((_, rangeMultiplier) =>
+        rows.map((row) =>
         (
           <div className="row">
-            {IntervalNames.slice(rangeMultiplier * intervalrange, intervalrange * (1 + rangeMultiplier)).map((el, index) => (
-              <button onClick={() => props.clickButton(index)}>{el}</button>
+            {row.map((el) => (
+              <button onClick={() => props.clickButton(el.value)}>{el.title}</button>
             ))}
 
 

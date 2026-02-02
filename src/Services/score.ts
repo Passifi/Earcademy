@@ -11,6 +11,7 @@ export class Guess {
     this.correct = correct
     this.mode = Modes.IntervalUp;
   }
+
 }
 
 
@@ -29,7 +30,7 @@ export class Scorer {
   currentInterval: number;
   currentNote!: Note;
   range: number = 12;
-  currentMode: number = 2
+  currentMode: number = Modes.IntervalUp
   publicGuesses: Guess[];
   constructor() {
     this.guesses = []
@@ -49,8 +50,8 @@ export class Scorer {
       this.publicGuesses = [...this.guesses]
       this.generateChallenge()
     }
-
-    return this.guesses.at(-1)!.correct
+    var diff = Math.abs(this.currentInterval) - answer
+    return { correct: this.guesses.at(-1)!.correct, errorSize: diff }
   }
 
   generateChallenge() {
@@ -76,6 +77,7 @@ export class Scorer {
 
   setGameMode(newMode: number) {
     this.currentMode = newMode;
+    this.generateChallenge();
   }
 
   getScore() {
