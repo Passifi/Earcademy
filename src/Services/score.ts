@@ -1,7 +1,6 @@
-import { warn } from "tone/build/esm/core/util/Debug";
 import { RandomGenerator } from "../classes/RandomGenerator";
 import { Note } from "./notes";
-
+import { Difficulties, Setting } from "../classes/Setting";
 export class Guess {
   interval: number;
   correct: boolean;
@@ -24,6 +23,14 @@ export const Modes = {
   IntervalUpDown: 4,
   Simultanous: 8
 }
+const intervalsPerDifficulty: Record<number, any[]> = {
+  [Difficulties.Easy]: [0, 3, 7, 12],
+  [Difficulties.Medium]: [0, 2, 3, 7, 9, 12],
+  [Difficulties.Hard]: [0, 1, 2, 3, 4, 5, 7, 9, 12],
+  [Difficulties.Beethoven]: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 12],
+  [Difficulties.Mozart]: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+
+}
 
 export class Scorer {
   guesses: Guess[]
@@ -32,11 +39,14 @@ export class Scorer {
   range: number = 12;
   currentMode: number = Modes.IntervalUp
   publicGuesses: Guess[];
+  difficulty: number;
   constructor() {
     this.guesses = []
     this.publicGuesses = []
-    this.currentInterval = Math.round(Math.random() * 12)
     this.generateNote(3, 5)
+    this.difficulty = Difficulties.Easy;
+
+    this.currentInterval = RandomGenerator.randomValueFromSet(intervalsPerDifficulty[this.difficulty])
   }
 
   setInterval(interval: number) {
@@ -55,10 +65,14 @@ export class Scorer {
   }
 
   generateChallenge() {
-    var min = this.currentMode == Modes.IntervalUpDown || this.currentMode == Modes.IntervalDown ? this.range * -1 : 0;
-    var max = this.currentMode == Modes.IntervalUpDown || this.currentMode == Modes.IntervalUp ? this.range : 0;
     this.generateNote(3, 5);
-    this.generateInterval(min, max)
+    this.generateInterval()
+    if (Modes.IntervalDown) {
+      this.currentInterval *= -1;
+    }
+    else if (Modes.IntervalUpDown) {
+      this.currentInterval *= Math.sign(RandomGenerator.randomValue(-1, 1.0));
+    }
   }
 
   generateNote(minOctave: number, maxOctave: number) {
@@ -66,10 +80,13 @@ export class Scorer {
       Math.round(Math.random() * (maxOctave - minOctave + 1) + minOctave));
   }
 
-  generateInterval(min: number, max: number) {
-    this.currentInterval = RandomGenerator.randomValue(min, max)
-
+  generateInterval() {
+    // this.currentInterval = RandomGenerator.randomValue(min, max)
+    var intervals = intervalsPerDifficulty[this.difficulty]
+    this.currentInterval = RandomGenerator.randomValueFromSet(intervals)
   }
+
+
 
   get guessData() {
     return this.publicGuesses

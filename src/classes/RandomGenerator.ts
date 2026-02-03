@@ -1,6 +1,6 @@
 export class RandomGenerator {
 
-  static randomValueFromSet(values: []) {
+  static randomValueFromSet(values: any[]) {
     return values[Math.floor(Math.random() * values.length)]
   }
 

@@ -7,12 +7,16 @@ import { useMemo, useRef, useState } from 'react';
 import { Synth } from './classes/Synth';
 import AnalysisGraph from './Components/AnalysisGraph';
 import GameModeSelection from './Components/GameModeSelection';
+import Settings from './Components/Settings';
+import { Difficulties, Setting } from './classes/Setting';
 
 function App() {
   const synth = useRef<Synth>(new Synth());
   const [feedback, setFeedback] = useState<string | undefined>()
   const [feedback2, setFeedback2] = useState<string | undefined>()
   const [feedbackClass, setFeedbackClass] = useState<string>("right")
+  const [setting, setSetting] = useState<Setting>(new Setting(false, Difficulties.Easy, "Pascal"))
+
   synth.current.setADSR({ attack: 0.01, decay: 0.5, sustain: 0.3, release: 2.9 });
   const scorer = useRef(new Scorer())
   const [score, setScore] = useState(scorer.current.getScore())
@@ -48,6 +52,10 @@ function App() {
     }
   }
 
+  function setSettings(field: string, value: any) {
+    setSetting((formerSetting: Setting) => ({ ...formerSetting, [field]: value }))
+  }
+
   return (
     <>
       <AnalysisGraph guesses={scorer.current.guessData} />
@@ -60,7 +68,7 @@ function App() {
       <button onClick={async () => { await playInterval(scorer.current.currentNote) }} >Play</button>
 
       <IntervalSelectionMatrix clickButton={(n: number) => { checkAnswer(n) }} />
-
+      <Settings settings={setting} onChange={setSettings} />
       <GameModeSelection initialMode={scorer.current.currentMode} setModeCallback={(m) => scorer.current.setGameMode(m)} />
     </>
   )
