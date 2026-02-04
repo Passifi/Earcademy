@@ -9,15 +9,15 @@ export default function PluckSynthSetup() {
     synth.triggerAttackRelease("C4", "8n");
   }
 
-  function setDamping(value) {
+  function setDamping(value: number) {
     synth.dampening = value * 70;
   }
 
-  function setResonance(value) {
+  function setResonance(value: number) {
     synth.resonance = value / 100;
   }
 
-  function setRelease(value) {
+  function setRelease(value: number) {
     synth.release = value;
   }
   return (

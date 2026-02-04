@@ -1,9 +1,7 @@
 import './App.css'
-import * as Tone from "tone"
-import { Note } from './Services/notes';
 import { Scorer } from "./Services/score"
 import IntervalSelectionMatrix from './Components/IntervalSelectionMatrix';
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Synth } from './classes/Synth';
 import AnalysisGraph from './Components/AnalysisGraph';
 import GameModeSelection from './Components/GameModeSelection';
@@ -11,49 +9,59 @@ import Settings from './Components/Settings';
 import { Difficulties, Setting } from './classes/Setting';
 
 function App() {
+  const scorer = useRef(new Scorer())
   const synth = useRef<Synth>(new Synth());
   const [feedback, setFeedback] = useState<string | undefined>()
   const [feedback2, setFeedback2] = useState<string | undefined>()
   const [feedbackClass, setFeedbackClass] = useState<string>("right")
   const [setting, setSetting] = useState<Setting>(new Setting(false, Difficulties.Easy, "Pascal"))
-
-  synth.current.setADSR({ attack: 0.01, decay: 0.5, sustain: 0.3, release: 2.9 });
-  const scorer = useRef(new Scorer())
   const [score, setScore] = useState(scorer.current.getScore())
-  async function playInterval(note: Note) {
-    await Tone.start();
-    playNote(note, 8);
-    const nextNote = note.addInterval(scorer.current.currentInterval)
-    setTimeout(() => playNote(nextNote, 8), 300) // this is probably an issue
+
+  // setup based on SettingsData
+  useEffect(() =>
+    synth.current.setADSR({ attack: 0.01, decay: 0.5, sustain: 0.3, release: 2.9 }), []);
+
+  function setPositiveFeedback() {
+    setFeedback("That's right")
+    setFeedback2("")
+    setFeedbackClass("right")
   }
-  function playNote(note: Note, duration: number) {
-    synth.current.setTriggerRelease(note, duration);
+
+  function setNegativeFeedback(errorSize: number) {
+    var closeOne = Math.abs(errorSize) < 2 ? "But you were really Close!" : "";
+    if (errorSize < 0) {
+      setFeedback2(() => "You were over! " + closeOne);
+    }
+    else {
+      setFeedback2(() => "You were under! " + closeOne);
+    }
+    setFeedback(() => "Wrong guess. Try again!");
+    setFeedbackClass("wrong")
+  }
+
+  function generateFeedback(result: any) {
+    if (result.correct) {
+      setScore(scorer.current.getScore())
+      setPositiveFeedback();
+    }
+    else {
+      setNegativeFeedback(result.errorSize)
+    }
   }
 
   function checkAnswer(interval: number) {
     var result = scorer.current.checkAnswer(interval);
-    if (result.correct) {
-      setScore(scorer.current.getScore())
-      setFeedback("That's right")
-      setFeedback2("")
-      setFeedbackClass("right")
-    }
-    else {
-
-      var closeOne = Math.abs(result.errorSize) < 2 ? "But you were really Close!" : "";
-      if (result.errorSize < 0) {
-        setFeedback2(() => "You were over! " + closeOne);
-      }
-      else {
-        setFeedback2(() => "You were under! " + closeOne);
-      }
-      setFeedback(() => "Wrong guess. Try again!");
-      setFeedbackClass("wrong")
-    }
+    generateFeedback(result)
   }
+
+  // settings Logic
 
   function setSettings(field: string, value: any) {
     setSetting((formerSetting: Setting) => ({ ...formerSetting, [field]: value }))
+    if (field === "difficulty") {
+      console.log(value)
+      scorer.current.Difficulty = value
+    }
   }
 
   return (
@@ -65,8 +73,11 @@ function App() {
       </p >
       <div>
         <h3>Score: </h3>{score.toFixed(2)}</div>
-      <button onClick={async () => { await playInterval(scorer.current.currentNote) }} >Play</button>
-
+      <button onClick={async () => {
+        await synth.current.playInterval(scorer.current.currentNote, scorer.current.currentInterval, 8);
+      }}>
+        Play
+      </button>
       <IntervalSelectionMatrix clickButton={(n: number) => { checkAnswer(n) }} />
       <Settings settings={setting} onChange={setSettings} />
       <GameModeSelection initialMode={scorer.current.currentMode} setModeCallback={(m) => scorer.current.setGameMode(m)} />

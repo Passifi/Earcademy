@@ -4,10 +4,11 @@ export interface Instrument {
   triggerAttackRelease: (note: Tone.Unit.Frequency, duration: Tone.Unit.Time, time?: Tone.Unit.Time, velocity?: number) => void
   toDestination: () => void,
   envelope: Tone.AmplitudeEnvelope
+  filterEnvelope: Tone.FrequencyEnvelope
+  filter: Tone.Filter
   volume: Tone.Param<"decibels">
 }
-
-interface Envelope {
+export interface Envelope {
   attack: number,
   decay: number,
   sustain: number,
@@ -15,7 +16,6 @@ interface Envelope {
 };
 
 export class Synth {
-
 
   instrument: Instrument;
   constructor() {
@@ -28,7 +28,7 @@ export class Synth {
   }
 
   setFilterCutoff(frequency: number) {
-
+    this.instrument.filter.set({ frequency: frequency })
   }
 
   setADSR(values: Envelope) {
@@ -47,6 +47,12 @@ export class Synth {
     this.instrument.triggerAttackRelease(note.getNote(), `${duration}n`, now);
   }
 
-
-
+  async playInterval(note: Note, interval: number, duration: number) { // this function has to be triggered by a userdriven event
+    await Tone.start();
+    const now = Tone.now(); // without this synth seems to operate on it's on timeline... 
+    const durationFormatted = `${duration}n`
+    this.instrument.triggerAttackRelease(note.getNote(), durationFormatted, now);
+    const secondNote = note.addInterval(interval)
+    this.instrument.triggerAttackRelease(secondNote.getNote(), durationFormatted, now + 0.4)
+  }
 };

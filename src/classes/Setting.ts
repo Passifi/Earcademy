@@ -1,10 +1,10 @@
 
 export const Difficulties = {
-  Easy: 1,
-  Medium: 2,
-  Hard: 4,
-  Beethoven: 8,
-  Mozart: 16
+  Easy: 10,
+  Medium: 20,
+  Hard: 30,
+  Beethoven: 40,
+  Mozart: 50
 };
 
 

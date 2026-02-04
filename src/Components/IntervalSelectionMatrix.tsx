@@ -17,7 +17,6 @@ export default function IntervalSelectionMatrix(props: IntervalSelectionProps) {
     IntervalNames.slice(4, 8).map((el, index) => ({ title: el, value: index + 4 })),
     IntervalNames.slice(8, 13).map((el, index) => ({ title: el, value: index + 8 })),
   ]
-  console.log(rows)
   return (
     <div className="interval-selection-container">
       {

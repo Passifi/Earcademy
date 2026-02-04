@@ -45,7 +45,6 @@ export class Scorer {
     this.publicGuesses = []
     this.generateNote(3, 5)
     this.difficulty = Difficulties.Easy;
-
     this.currentInterval = RandomGenerator.randomValueFromSet(intervalsPerDifficulty[this.difficulty])
   }
 
@@ -67,11 +66,14 @@ export class Scorer {
   generateChallenge() {
     this.generateNote(3, 5);
     this.generateInterval()
-    if (Modes.IntervalDown) {
+    if (this.currentMode === Modes.IntervalDown) {
       this.currentInterval *= -1;
     }
-    else if (Modes.IntervalUpDown) {
+    else if (this.currentMode === Modes.IntervalUpDown) {
       this.currentInterval *= Math.sign(RandomGenerator.randomValue(-1, 1.0));
+    }
+    else {
+      this.currentInterval = Math.abs(this.currentInterval)
     }
   }
 
@@ -86,14 +88,17 @@ export class Scorer {
     this.currentInterval = RandomGenerator.randomValueFromSet(intervals)
   }
 
-
-
   get guessData() {
     return this.publicGuesses
   }
 
   setGameMode(newMode: number) {
     this.currentMode = newMode;
+    this.generateChallenge();
+  }
+
+  set Difficulty(newDifficulty: number) {
+    this.difficulty = newDifficulty
     this.generateChallenge();
   }
 
