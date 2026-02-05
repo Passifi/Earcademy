@@ -30,7 +30,6 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -40,9 +39,16 @@ h1 {
   line-height: 1.1;
 }
 
+.mode-selection-container {
+  display: flex;
+  flex-grow: 1;
+}
+
 .mode-selection-container ul {
   list-style: none;
   display: flex;
+  flex-wrap: wrap;
+  ;
 }
 
 button {
@@ -134,6 +140,22 @@ button:focus-visible {
 
 .right {
   color: green;
+}
+
+.main-area {
+  display: flex;
+  width: 100%;
+}
+
+.game-container {
+  flex-grow: 3;
+}
+
+.settings-area {
+  display: relative;
+  position: absolute;
+  right: 1.2rem;
+  width: fit-content;
 }
 
 

@@ -1,0 +1,15 @@
+.settings-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: start;
+  background-color: grey;
+  border-radius: 0.8rem;
+  padding: 1.2rem;
+  width: fit-content;
+}
+
+
+.difficulty-slider-container {
+  flex-grow: 2;
+}

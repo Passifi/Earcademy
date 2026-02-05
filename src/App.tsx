@@ -7,6 +7,7 @@ import AnalysisGraph from './Components/AnalysisGraph';
 import GameModeSelection from './Components/GameModeSelection';
 import Settings from './Components/Settings';
 import { Difficulties, Setting } from './classes/Setting';
+import PluckSynthSetup from './Components/PluckSynthSetup';
 
 function App() {
   const scorer = useRef(new Scorer())
@@ -59,28 +60,37 @@ function App() {
   function setSettings(field: string, value: any) {
     setSetting((formerSetting: Setting) => ({ ...formerSetting, [field]: value }))
     if (field === "difficulty") {
-      console.log(value)
       scorer.current.Difficulty = value
     }
+    if (field === "game-mode") {
+      scorer.current.setGameMode(value)
+    }
+
   }
 
   return (
     <>
-      <AnalysisGraph guesses={scorer.current.guessData} />
-      <p className={"feedback " + feedbackClass}>
-        {feedback} <br />
-        {feedback2}
-      </p >
-      <div>
-        <h3>Score: </h3>{score.toFixed(2)}</div>
-      <button onClick={async () => {
-        await synth.current.playInterval(scorer.current.currentNote, scorer.current.currentInterval, 8);
-      }}>
-        Play
-      </button>
-      <IntervalSelectionMatrix clickButton={(n: number) => { checkAnswer(n) }} />
-      <Settings settings={setting} onChange={setSettings} />
-      <GameModeSelection initialMode={scorer.current.currentMode} setModeCallback={(m) => scorer.current.setGameMode(m)} />
+      <div className="settings-area">
+        <Settings settings={setting} onChange={setSettings} />
+      </div>
+      <div className="main-area">
+        <div className='game-container'>
+          <AnalysisGraph guesses={scorer.current.guessData} />
+          <p className={"feedback " + feedbackClass}>
+            {feedback} <br />
+            {feedback2}
+          </p >
+          <div>
+            <h3>Score: </h3>{score.toFixed(2)}</div>
+          <button onClick={async () => {
+            await synth.current.playInterval(scorer.current.currentNote, scorer.current.currentInterval, 8);
+          }}>
+            Play
+          </button>
+          <IntervalSelectionMatrix clickButton={(n: number) => { checkAnswer(n) }} />
+        </div>
+
+      </div>
     </>
   )
 }
