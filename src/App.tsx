@@ -1,26 +1,25 @@
 import './App.css'
 import { Scorer } from "./Services/score"
 import IntervalSelectionMatrix from './Components/IntervalSelectionMatrix';
-import { useRef, useState, useEffect } from 'react';
+import { useMemo, useRef, useState, useEffect } from 'react';
 import { Synth } from './classes/Synth';
 import AnalysisGraph from './Components/AnalysisGraph';
 import GameModeSelection from './Components/GameModeSelection';
 import Settings from './Components/Settings';
 import { Difficulties, Setting } from './classes/Setting';
 import PluckSynthSetup from './Components/PluckSynthSetup';
-
+import * as Tone from "tone"
 function App() {
   const scorer = useRef(new Scorer())
-  const synth = useRef<Synth>(new Synth());
+  const synth = useMemo(() => new Synth(), []);
   const [feedback, setFeedback] = useState<string | undefined>()
   const [feedback2, setFeedback2] = useState<string | undefined>()
   const [feedbackClass, setFeedbackClass] = useState<string>("right")
   const [setting, setSetting] = useState<Setting>(new Setting(false, Difficulties.Easy, "Pascal"))
   const [score, setScore] = useState(scorer.current.getScore())
-
   // setup based on SettingsData
   useEffect(() =>
-    synth.current.setADSR({ attack: 0.01, decay: 0.5, sustain: 0.3, release: 2.9 }), []);
+    synth.setADSR({ attack: 0.01, decay: 0.5, sustain: 0.3, release: 2.9 }), []);
 
   function setPositiveFeedback() {
     setFeedback("That's right")
@@ -81,7 +80,9 @@ function App() {
           <div>
             <h3>Score: </h3>{score.toFixed(2)}</div>
           <button onClick={async () => {
-            await synth.current.playInterval(scorer.current.currentNote, scorer.current.currentInterval, 8);
+            if (Tone.getContext().state != "running")
+              await Tone.start();
+            await synth.playInterval(scorer.current.currentNote, scorer.current.currentInterval, 8);
           }}>
             Play
           </button>

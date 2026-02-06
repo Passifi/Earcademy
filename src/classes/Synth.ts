@@ -48,11 +48,10 @@ export class Synth {
   }
 
   async playInterval(note: Note, interval: number, duration: number) { // this function has to be triggered by a userdriven event
-    await Tone.start();
     const now = Tone.now(); // without this synth seems to operate on it's on timeline... 
     const durationFormatted = `${duration}n`
-    this.instrument.triggerAttackRelease(note.getNote(), durationFormatted, now);
     const secondNote = note.addInterval(interval)
-    this.instrument.triggerAttackRelease(secondNote.getNote(), durationFormatted, now + 0.4)
+    this.instrument.triggerAttackRelease(note.getNote(), durationFormatted, now);
+    this.instrument.triggerAttackRelease(secondNote.getNote(), durationFormatted, now + 0.5)
   }
 };

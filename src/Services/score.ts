@@ -13,7 +13,6 @@ export class Guess {
 
 }
 
-
 const basePoints = 100;
 const pointDeduction = 10;
 
@@ -68,13 +67,16 @@ export class Scorer {
   }
 
   generateChallenge() {
-    this.generateNote(3, 5);
+    this.generateNote(2, 6);
     this.generateInterval()
     if (this.currentMode === Modes.IntervalDown) {
+      console.log("bamn")
       this.currentInterval *= -1;
     }
     else if (this.currentMode === Modes.IntervalUpDown) {
-      this.currentInterval *= Math.sign(RandomGenerator.randomValue(-1, 1.0));
+      let sgn = Math.sign(RandomGenerator.randomValue(-1.0, 1.0));
+      sgn = sgn != 0 ? sgn : 1.0
+      this.currentInterval *= Math.sign(RandomGenerator.randomValue(-1.0, 1.0));
     }
     else {
       this.currentInterval = Math.abs(this.currentInterval)
