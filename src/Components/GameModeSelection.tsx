@@ -12,7 +12,7 @@ export default function GameModeSelection(props: GameModeSelection) {
   const [mode, setMode] = useState(props.initialMode)
   return (
     <div className="mode-selection-container">
-
+      <h3> Question type </h3>
       <ul>
 
         {(Object.keys(Modes) as Array<keyof typeof Modes>).map(el =>

@@ -55,8 +55,6 @@ function App() {
     generateFeedback(result)
   }
 
-  // settings Logic
-
   function setSettings(field: string, value: any) {
     setSetting((formerSetting: Setting) => ({ ...formerSetting, [field]: value }))
     if (field === "difficulty") {
@@ -75,7 +73,7 @@ function App() {
       </div>
       <div className="main-area">
         <div className='game-container'>
-          <AnalysisGraph guesses={scorer.current.guessData} />
+          <AnalysisGraph possibleIntervals={scorer.current.getPossibleIntervals()} guesses={scorer.current.guessData} />
           <p className={"feedback " + feedbackClass}>
             {feedback} <br />
             {feedback2}

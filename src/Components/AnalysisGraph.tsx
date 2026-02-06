@@ -1,12 +1,14 @@
 import type { Guess } from "../Services/score"
 import { IntervalNames } from "./IntervalSelectionMatrix";
 interface AnalysisProp {
+  possibleIntervals: any[];
   guesses: Guess[];
 };
 
 export default function AnalysisGraph(props: AnalysisProp) {
   const analyzer: Map<number, boolean[]> = new Map<number, boolean[]>()
-  for (var el of props.guesses) {
+
+  for (let el of props.guesses) {
     if (analyzer.has(el.interval)) {
       analyzer.get(el.interval)!.push(el!.correct)
     }
@@ -14,6 +16,15 @@ export default function AnalysisGraph(props: AnalysisProp) {
       analyzer.set(el.interval, [el.correct])
     }
   }
+
+  for (let el of props.possibleIntervals) {
+
+    if (!analyzer.has(el)) {
+      analyzer.set(el, [])
+    }
+
+  }
+
   const values = []
   for (var k of analyzer.keys()) {
     const correct = analyzer.get(k)!.filter(el => el).length
@@ -29,9 +40,21 @@ export default function AnalysisGraph(props: AnalysisProp) {
     else if (value > 0.2) {
       return "neutral";
     }
-    else {
+    else if (value > 0.0) {
       return "badRatio"
     }
+    else {
+      return "neutral"
+    }
+  }
+
+  function getColor(percentage: number) {
+    if (isNaN(percentage)) {
+      percentage = 1.0;
+    }
+    const hue = percentage * 100 * 1.2;
+
+    return `hsl(${hue}, 100%, 30%)`;
   }
 
   return (
@@ -39,8 +62,8 @@ export default function AnalysisGraph(props: AnalysisProp) {
       <ul >
         {
           values.map(el => (
-            <li key={el[0]} className={feedbackClass(el[1])} style={{ height: el[1] * 100 }}>
-              {IntervalNames[el[0]]} {(el[1] * 100).toFixed(2)}%
+            <li key={el[0]} className={feedbackClass(el[1])} style={{ backgroundColor: getColor(el[1]), height: el[1] > 0 ? el[1] * 100 : 100 }}>
+              {IntervalNames[el[0]]} {el[1] > 0 ? (el[1] * 100).toFixed(2) : ""}%
             </li>
           ))
         }

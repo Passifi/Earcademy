@@ -13,3 +13,16 @@
 .difficulty-slider-container {
   flex-grow: 2;
 }
+
+.settings-container label {
+  font-size: 1.2rem;
+}
+
+.settings-container span {
+  font-style: italic;
+}
+
+.setting-container h3 {
+  font-weight: bolder;
+
+}

@@ -52,6 +52,10 @@ export class Scorer {
     this.currentInterval = interval
   }
 
+  getPossibleIntervals() {
+    return intervalsPerDifficulty[this.difficulty]
+  }
+
   checkAnswer(answer: number) {
     const currentGuess = new Guess(Math.abs(this.currentInterval), Math.abs(this.currentInterval) === answer)
     this.guesses.push(currentGuess)
