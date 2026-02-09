@@ -67,7 +67,7 @@ export class Scorer {
   }
 
   generateChallenge() {
-    this.generateNote(2, 6);
+    this.generateNote(2, 5);
     this.generateInterval()
     if (this.currentMode === Modes.IntervalDown) {
       console.log("bamn")

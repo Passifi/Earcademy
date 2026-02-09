@@ -17,15 +17,17 @@ export default function Settings(props: SettingsProps) {
   return (
     <div className="settings-container">
       <div>
-        <input type="checkbox" name="hints" checked={props.settings.showHints} onChange={(_) => props.onChange("showHints", !props.settings.showHints)} />
-        <label htmlFor="hints"> Show Hints </label>
-      </div>
-      <div className="difficulty-slider-container">
-        <label htmlFor="difficulty-slider"> Difficulty </label>
-        <input type="range" name="difficulty-slider" value={props.settings.difficulty} onChange={(e) => { props.onChange("difficulty", e.target.value); setDifficulty(Number(e.target.value)); }} step="10" min={10} max={50} />
+        <div>
+          <input type="checkbox" name="hints" checked={props.settings.showHints} onChange={(_) => props.onChange("showHints", !props.settings.showHints)} />
+          <label htmlFor="hints"> Show Hints </label>
+        </div>
+        <div className="difficulty-slider-container">
+          <label htmlFor="difficulty-slider"> Difficulty </label>
+          <input type="range" name="difficulty-slider" value={props.settings.difficulty} onChange={(e) => { props.onChange("difficulty", e.target.value); setDifficulty(Number(e.target.value)); }} step="10" min={10} max={50} />
 
-      </div >
-      <span>{difficultFields[difficulty]}</span>
+        </div >
+        <span>{difficultFields[difficulty]}</span>
+      </div>
       <GameModeSelection initialMode={props.settings.gameMode} setModeCallback={(e: any) => props.onChange("game-mode", e)} />
 
     </div>

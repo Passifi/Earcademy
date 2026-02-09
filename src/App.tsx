@@ -28,12 +28,15 @@ function App() {
   }
 
   function setNegativeFeedback(errorSize: number) {
-    var closeOne = Math.abs(errorSize) < 2 ? "But you were really Close!" : "";
-    if (errorSize < 0) {
-      setFeedback2(() => "You were over! " + closeOne);
-    }
-    else {
-      setFeedback2(() => "You were under! " + closeOne);
+
+    if (setting.showHints) {
+      var closeOne = Math.abs(errorSize) < 2 ? "But you were really Close!" : "";
+      if (errorSize < 0) {
+        setFeedback2(() => "You were over! " + closeOne);
+      }
+      else {
+        setFeedback2(() => "You were under! " + closeOne);
+      }
     }
     setFeedback(() => "Wrong guess. Try again!");
     setFeedbackClass("wrong")
@@ -62,14 +65,12 @@ function App() {
     if (field === "game-mode") {
       scorer.current.setGameMode(value)
     }
+    console.log(setting)
 
   }
 
   return (
     <>
-      <div className="settings-area">
-        <Settings settings={setting} onChange={setSettings} />
-      </div>
       <div className="main-area">
         <div className='game-container'>
           <AnalysisGraph possibleIntervals={scorer.current.getPossibleIntervals()} guesses={scorer.current.guessData} />
@@ -82,7 +83,7 @@ function App() {
           <button onClick={async () => {
             if (Tone.getContext().state != "running")
               await Tone.start();
-            await synth.playInterval(scorer.current.currentNote, scorer.current.currentInterval, 8);
+            await synth.playSimultanousInterval(scorer.current.currentNote, scorer.current.currentInterval, 8);
           }}>
             Play
           </button>
@@ -90,6 +91,10 @@ function App() {
         </div>
 
       </div>
+      <div className="settings-area">
+        <Settings settings={setting} onChange={setSettings} />
+      </div>
+
     </>
   )
 }

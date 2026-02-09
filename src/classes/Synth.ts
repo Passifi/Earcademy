@@ -18,13 +18,21 @@ export interface Envelope {
 export class Synth {
 
   instrument: Instrument;
+  secondVoice: Instrument;
   constructor() {
     const synth = new Tone.MonoSynth({ oscillator: { type: "square" } }).toDestination();
     synth.filterEnvelope.attack = 0.0;
     synth.filterEnvelope.decay = 0.0;
     synth.filterEnvelope.sustain = 0.0;
     synth.filterEnvelope.release = 0.0;
+    const synth2 = new Tone.MonoSynth({ oscillator: { type: "square" } }).toDestination();
+    synth2.filterEnvelope.attack = 0.0;
+    synth2.filterEnvelope.decay = 0.0;
+    synth2.filterEnvelope.sustain = 0.0;
+    synth2.filterEnvelope.release = 0.0;
+
     this.instrument = synth
+    this.secondVoice = synth2;
   }
 
   setFilterCutoff(frequency: number) {
@@ -54,4 +62,13 @@ export class Synth {
     this.instrument.triggerAttackRelease(note.getNote(), durationFormatted, now);
     this.instrument.triggerAttackRelease(secondNote.getNote(), durationFormatted, now + 0.5)
   }
+
+  async playSimultanousInterval(note: Note, interval: number, duration: number) { // this function has to be triggered by a userdriven event
+    const now = Tone.now(); // without this synth seems to operate on it's on timeline... 
+    const durationFormatted = `${duration}n`
+    const secondNote = note.addInterval(Math.abs(interval))
+    this.instrument.triggerAttackRelease(note.getNote(), durationFormatted, now);
+    this.secondVoice.triggerAttackRelease(secondNote.getNote(), durationFormatted, now + 0.01)
+  }
+
 };
