@@ -9,8 +9,9 @@ import Settings from './Components/Settings';
 import { Difficulties, Setting } from './classes/Setting';
 import PluckSynthSetup from './Components/PluckSynthSetup';
 import * as Tone from "tone"
+import { Modes } from './Services/score';
 function App() {
-  const scorer = useRef(new Scorer())
+  const scorer = useRef(new Scorer((el: number) => { setSettings("difficulty", el) }))
   const synth = useMemo(() => new Synth(), []);
   const [feedback, setFeedback] = useState<string | undefined>()
   const [feedback2, setFeedback2] = useState<string | undefined>()
@@ -66,7 +67,6 @@ function App() {
       scorer.current.setGameMode(value)
     }
     console.log(setting)
-
   }
 
   return (
@@ -83,18 +83,19 @@ function App() {
           <button onClick={async () => {
             if (Tone.getContext().state != "running")
               await Tone.start();
-            await synth.playSimultanousInterval(scorer.current.currentNote, scorer.current.currentInterval, 8);
+            if (scorer.current.currentMode == Modes.Simultanous)
+              await synth.playSimultanousInterval(scorer.current.currentNote, scorer.current.currentInterval, 8);
+            else
+              await synth.playInterval(scorer.current.currentNote, scorer.current.currentInterval, 8)
           }}>
             Play
           </button>
           <IntervalSelectionMatrix clickButton={(n: number) => { checkAnswer(n) }} />
         </div>
-
       </div>
       <div className="settings-area">
         <Settings settings={setting} onChange={setSettings} />
       </div>
-
     </>
   )
 }

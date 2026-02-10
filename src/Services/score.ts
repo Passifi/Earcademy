@@ -22,6 +22,7 @@ export const Modes = {
   IntervalUpDown: 4,
   Simultanous: 8
 }
+
 const intervalsPerDifficulty: Record<number, any[]> = {
   [Difficulties.Easy]: [0, 3, 7, 12],
   [Difficulties.Medium]: [0, 2, 3, 7, 9, 12],
@@ -31,7 +32,9 @@ const intervalsPerDifficulty: Record<number, any[]> = {
 
 }
 
+const checkInterval = 10
 export class Scorer {
+  intervalAccu: number = 0
   guesses: Guess[]
   currentInterval: number;
   currentNote!: Note;
@@ -39,7 +42,10 @@ export class Scorer {
   currentMode: number = Modes.IntervalUp
   publicGuesses: Guess[];
   difficulty: number;
-  constructor() {
+  dynamicDifficulty: boolean = true;
+  onDifficultyChange: (el: number) => void
+  constructor(difficultyChangeHandler: (el: number) => void) {
+    this.onDifficultyChange = difficultyChangeHandler
     this.guesses = []
     this.publicGuesses = []
     this.generateNote(3, 5)
@@ -58,10 +64,16 @@ export class Scorer {
   checkAnswer(answer: number) {
     const currentGuess = new Guess(Math.abs(this.currentInterval), Math.abs(this.currentInterval) === answer)
     this.guesses.push(currentGuess)
+
     if (currentGuess.correct) {
       this.publicGuesses = [...this.guesses]
       this.generateChallenge()
     }
+
+
+    this.intervalAccu++;
+    if (this.intervalAccu == checkInterval)
+      this.calibrateDifficulty();
     var diff = Math.abs(this.currentInterval) - answer
     return { correct: this.guesses.at(-1)!.correct, errorSize: diff }
   }
@@ -106,6 +118,24 @@ export class Scorer {
   set Difficulty(newDifficulty: number) {
     this.difficulty = newDifficulty
     this.generateChallenge();
+  }
+
+  calibrateDifficulty() {
+    if (this.guesses.length < checkInterval) return;
+    const lastTenGuesses = this.guesses.slice(this.guesses.length - checkInterval, this.guesses.length);
+    const correctGuesses = lastTenGuesses.filter(el => el.correct).length;
+    if (correctGuesses / checkInterval > 0.7) {
+      if (this.difficulty < Difficulties.Beethoven) {
+        this.difficulty += 10;
+      }
+    }
+    else if (correctGuesses / checkInterval < 0.2) {
+      if (this.difficulty > Difficulties.Easy)
+        this.difficulty -= 10;
+    }
+    this.intervalAccu = 0
+    this.onDifficultyChange(this.difficulty)
+
   }
 
   getScore() {
