@@ -61,13 +61,25 @@ export default function AnalysisGraph(props: AnalysisProp) {
     <div className="analyze-container">
       <ul >
         {
-          values.map(el => (
+          values.map((el, index) => (
             <li key={el[0]} className={feedbackClass(el[1])} style={{ backgroundColor: getColor(el[1]), height: el[1] > 0 ? el[1] * 100 : 100 }}>
-              {IntervalNames[el[0]]} {el[1] > 0 ? (el[1] * 100).toFixed(2) : ""}%
+              {index + 1}
             </li>
           ))
         }
       </ul>
+      <div className="legend">
+        <ul>
+          {values.map((el, index) =>
+          (
+            <li key={"legendNo"} >
+              {1 + index}: {IntervalNames[el[0]]}
+            </li>)
+          )
+
+          }
+        </ul>
+      </div>
     </div>
   )
 }

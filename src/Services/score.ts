@@ -58,7 +58,13 @@ export class Scorer {
   }
 
   getPossibleIntervals() {
-    return intervalsPerDifficulty[this.difficulty]
+    var intervalsTest = intervalsPerDifficulty[this.difficulty];
+    if (typeof (intervalsTest) != typeof ([])) {
+      console.log("Interals couldn't be retrieved using fallback")
+      return [0, 3, 5, 12]
+    }
+    else
+      return intervalsPerDifficulty[this.difficulty]
   }
 
   checkAnswer(answer: number) {
@@ -69,7 +75,6 @@ export class Scorer {
       this.publicGuesses = [...this.guesses]
       this.generateChallenge()
     }
-
 
     this.intervalAccu++;
     if (this.intervalAccu == checkInterval)
@@ -101,7 +106,6 @@ export class Scorer {
   }
 
   generateInterval() {
-    // this.currentInterval = RandomGenerator.randomValue(min, max)
     var intervals = intervalsPerDifficulty[this.difficulty]
     this.currentInterval = RandomGenerator.randomValueFromSet(intervals)
   }
@@ -133,9 +137,12 @@ export class Scorer {
       if (this.difficulty > Difficulties.Easy)
         this.difficulty -= 10;
     }
+    if (this.difficulty % 10 != 0 && this.difficulty != 0) {
+      // difficutly was screwed up somehow need better fix
+      this.difficulty = 0;
+    }
     this.intervalAccu = 0
     this.onDifficultyChange(this.difficulty)
-
   }
 
   getScore() {

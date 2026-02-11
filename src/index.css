@@ -114,12 +114,17 @@ button:focus-visible {
   }
 }
 
+.analyze-container {
+  display: flex;
+}
+
 .analyze-container ul {
   list-style: none;
   display: flex;
   gap: 1.2rem;
   align-items: end;
   flex-wrap: wrap;
+  flex-grow: 3;
 }
 
 .analyze-container li {
@@ -156,11 +161,23 @@ button:focus-visible {
   width: 100%;
 }
 
+.legend ul {
+  font-size: 0.8rem;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.legend li {
+  padding: 0;
+}
+
 .game-container {
-  flex-grow: 3;
   display: flex;
   flex-direction: column;
   gap: 1.4rem;
+  margin: auto;
+  text-align: center;
 }
 
 .wrong {
