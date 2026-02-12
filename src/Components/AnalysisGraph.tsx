@@ -72,7 +72,7 @@ export default function AnalysisGraph(props: AnalysisProp) {
         <ul>
           {values.map((el, index) =>
           (
-            <li key={"legendNo"} >
+            <li key={"legendNo" + index} >
               {1 + index}: {IntervalNames[el[0]]}
             </li>)
           )

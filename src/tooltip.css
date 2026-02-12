@@ -1,0 +1,12 @@
+.tooltip {
+  visibility: hidden;
+  position: absolute;
+}
+
+.visible {
+  visibility: visible;
+  width: fit-content;
+  height: fit-content;
+  background-color: white;
+  color: black;
+}

@@ -73,7 +73,7 @@ function App() {
   return (
     <>
       <div className="main-area">
-        <div onMouseEnter={(e: React.MouseEvent) => { setCoords({ x: e.pageX, y: e.pageY }); setOpen(true) }} onMouseLeave={(e: React.MouseEvent) => { setOpen(false) }} className='game-container'> <Tooltip mouseX={mouseCoord.x} mouseY={mouseCoord.y} open={open}> Test </Tooltip>
+        <div onMouseEnter={(e: React.MouseEvent) => { setCoords([e.clientX, e.clientY]) }} className='game-container'> <Tooltip mouseX={mouseCoord[0]} mouseY={mouseCoord[1]} open={open}> Test </Tooltip>
           <AnalysisGraph possibleIntervals={scorer.current.getPossibleIntervals()} guesses={scorer.current.guessData} />
           <p className={"feedback " + feedbackClass}>
             {feedback} <br />
@@ -93,7 +93,7 @@ function App() {
           </button>
           <IntervalSelectionMatrix clickButton={(n: number) => { checkAnswer(n) }} />
         </div>
-      </div >
+      </div>
       <div className="settings-area">
         <Settings settings={setting} onChange={setSettings} />
       </div>
