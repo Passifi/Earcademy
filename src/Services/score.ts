@@ -34,6 +34,7 @@ const intervalsPerDifficulty: Record<number, any[]> = {
 
 const checkInterval = 10
 export class Scorer {
+  generateNewChallenge: boolean = false
   intervalAccu: number = 0
   guesses: Guess[]
   currentInterval: number;
@@ -73,7 +74,7 @@ export class Scorer {
 
     if (currentGuess.correct) {
       this.publicGuesses = [...this.guesses]
-      this.generateChallenge()
+      this.generateNewChallenge = true
     }
 
     this.intervalAccu++;
@@ -84,10 +85,10 @@ export class Scorer {
   }
 
   generateChallenge() {
+    this.generateNewChallenge = false;
     this.generateNote(2, 5);
     this.generateInterval()
     if (this.currentMode === Modes.IntervalDown) {
-      console.log("bamn")
       this.currentInterval *= -1;
     }
     else if (this.currentMode === Modes.IntervalUpDown) {
@@ -121,7 +122,6 @@ export class Scorer {
 
   set Difficulty(newDifficulty: number) {
     this.difficulty = newDifficulty
-    this.generateChallenge();
   }
 
   calibrateDifficulty() {

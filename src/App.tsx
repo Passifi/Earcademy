@@ -19,6 +19,7 @@ function App() {
   const [score, setScore] = useState(scorer.current.getScore())
   const [mouseCoord, setCoords] = useState({ x: 0, y: 0 })
   const [open, setOpen] = useState(false);
+
   // setup based on SettingsData
   useEffect(() =>
     synth.setADSR({ attack: 0.01, decay: 0.5, sustain: 0.3, release: 2.9 }), []);
@@ -55,6 +56,7 @@ function App() {
   }
 
   function checkAnswer(interval: number) {
+    if (scorer.current.generateNewChallenge) return;
     var result = scorer.current.checkAnswer(interval);
     generateFeedback(result)
   }
@@ -84,6 +86,7 @@ function App() {
           <button onClick={async () => {
             if (Tone.getContext().state != "running")
               await Tone.start();
+            if (scorer.current.generateNewChallenge) scorer.current.generateChallenge()
             if (scorer.current.currentMode == Modes.Simultanous)
               await synth.playSimultanousInterval(scorer.current.currentNote, scorer.current.currentInterval, 8);
             else
