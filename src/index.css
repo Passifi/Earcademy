@@ -166,6 +166,8 @@ button:focus-visible {
   list-style: none;
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
+  max-height: 10rem;
 }
 
 .legend li {

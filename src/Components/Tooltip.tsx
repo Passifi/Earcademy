@@ -3,15 +3,12 @@ import "../tooltip.css"
 
 interface TooltipProps {
 
-  mouseX: number,
-  mouseY: number,
-  open: boolean,
   children: ReactNode
 }
 
-export default function Tooltip({ children, ...props }: TooltipProps) {
+export default function Tooltip({ children }: TooltipProps) {
   return (
-    <div className={"tooltip " + (props.open && "visible")} style={{ left: props.mouseX, top: props.mouseY }}>
-      {children}
+    <div className={"tooltip"} >
+      <span className="tooltiptext">{children}</span>
     </div>)
 }

@@ -1,5 +1,7 @@
 import type { Guess } from "../Services/score"
 import { IntervalNames } from "./IntervalSelectionMatrix";
+import "react-tooltip/dist/react-tooltip.css"
+import { Tooltip } from "react-tooltip";
 interface AnalysisProp {
   possibleIntervals: any[];
   guesses: Guess[];
@@ -59,21 +61,24 @@ export default function AnalysisGraph(props: AnalysisProp) {
 
   return (
     <div className="analyze-container">
+      {values.map((el, index) => (<Tooltip id={`${index}_tooltip`}>
+
+        {IntervalNames[el[0]]}
+
+      </Tooltip>))}
       <ul >
         {
           values.map((el, index) => (
-            <li key={el[0]} className={feedbackClass(el[1])} style={{ backgroundColor: getColor(el[1]), height: el[1] > 0 ? el[1] * 100 : 100 }}>
-              {index + 1}
+            <li data-tooltip-id={`${index}_tooltip`} key={el[0]} className={feedbackClass(el[1])} style={{ backgroundColor: getColor(el[1]), height: el[1] > 0 ? el[1] * 100 : 100 }}>
             </li>
           ))
         }
       </ul>
       <div className="legend">
         <ul>
-          {values.map((el, index) =>
+          {values.map((_, index) =>
           (
             <li key={"legendNo" + index} >
-              {1 + index}: {IntervalNames[el[0]]}
             </li>)
           )
 

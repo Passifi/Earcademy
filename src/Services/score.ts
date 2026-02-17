@@ -43,7 +43,7 @@ export class Scorer {
   currentMode: number = Modes.IntervalUp
   publicGuesses: Guess[];
   difficulty: number;
-  dynamicDifficulty: boolean = true;
+  dynamicDifficulty: boolean = false;
   onDifficultyChange: (el: number) => void
   constructor(difficultyChangeHandler: (el: number) => void) {
     this.onDifficultyChange = difficultyChangeHandler
@@ -78,7 +78,7 @@ export class Scorer {
     }
 
     this.intervalAccu++;
-    if (this.intervalAccu == checkInterval)
+    if (this.intervalAccu == checkInterval && this.dynamicDifficulty)
       this.calibrateDifficulty();
     var diff = Math.abs(this.currentInterval) - answer
     return { correct: this.guesses.at(-1)!.correct, errorSize: diff }
@@ -108,6 +108,7 @@ export class Scorer {
 
   generateInterval() {
     var intervals = intervalsPerDifficulty[this.difficulty]
+    console.log("Generating new interval");
     this.currentInterval = RandomGenerator.randomValueFromSet(intervals)
   }
 

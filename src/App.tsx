@@ -1,8 +1,7 @@
 import './App.css'
 import { Scorer } from "./Services/score"
-import IntervalSelectionMatrix from './Components/IntervalSelectionMatrix';
+import IntervalSelectionMatrix, { IntervalNames } from './Components/IntervalSelectionMatrix';
 import { useMemo, useRef, useState, useEffect } from 'react';
-import Tooltip from './Components/Tooltip';
 import { Synth } from './classes/Synth';
 import AnalysisGraph from './Components/AnalysisGraph';
 import Settings from './Components/Settings';
@@ -17,8 +16,6 @@ function App() {
   const [feedbackClass, setFeedbackClass] = useState<string>("right")
   const [setting, setSetting] = useState<Setting>(new Setting(false, Difficulties.Easy, "Pascal"))
   const [score, setScore] = useState(scorer.current.getScore())
-  const [mouseCoord, setCoords] = useState({ x: 0, y: 0 })
-  const [open, setOpen] = useState(false);
 
   // setup based on SettingsData
   useEffect(() =>
@@ -26,7 +23,8 @@ function App() {
 
   function setPositiveFeedback() {
     setFeedback("That's right")
-    setFeedback2("")
+
+    setFeedback2("" + IntervalNames[scorer.current.currentInterval]);
     setFeedbackClass("right")
   }
 
@@ -40,6 +38,9 @@ function App() {
       else {
         setFeedback2(() => "You were under! " + closeOne);
       }
+    }
+    else {
+      setFeedback2("")
     }
     setFeedback(() => "Wrong guess. Try again!");
     setFeedbackClass("wrong")
@@ -58,7 +59,7 @@ function App() {
   function checkAnswer(interval: number) {
     if (scorer.current.generateNewChallenge) return;
     var result = scorer.current.checkAnswer(interval);
-    generateFeedback(result)
+    generateFeedback(result);
   }
 
   function setSettings(field: string, value: any) {
@@ -69,13 +70,24 @@ function App() {
     if (field === "game-mode") {
       scorer.current.setGameMode(value)
     }
-    console.log(setting)
+  }
+
+  async function playNote() {
+    {
+      if (Tone.getContext().state != "running")
+        await Tone.start();
+      if (scorer.current.generateNewChallenge) scorer.current.generateChallenge()
+      if (scorer.current.currentMode == Modes.Simultanous)
+        await synth.playSimultanousInterval(scorer.current.currentNote, scorer.current.currentInterval, 8);
+      else
+        await synth.playInterval(scorer.current.currentNote, scorer.current.currentInterval, 8)
+    }
   }
 
   return (
     <>
       <div className="main-area">
-        <div onMouseEnter={(e: React.MouseEvent) => { setCoords({ x: e.pageX, y: e.pageY }); setOpen(true) }} onMouseLeave={(e: React.MouseEvent) => { setOpen(false) }} className='game-container'> <Tooltip mouseX={mouseCoord.x} mouseY={mouseCoord.y} open={open}> Test </Tooltip>
+        <div className="game-container">
           <AnalysisGraph possibleIntervals={scorer.current.getPossibleIntervals()} guesses={scorer.current.guessData} />
           <p className={"feedback " + feedbackClass}>
             {feedback} <br />
@@ -83,20 +95,12 @@ function App() {
           </p >
           <div>
             <h3>Score: </h3>{score.toFixed(2)}</div>
-          <button onClick={async () => {
-            if (Tone.getContext().state != "running")
-              await Tone.start();
-            if (scorer.current.generateNewChallenge) scorer.current.generateChallenge()
-            if (scorer.current.currentMode == Modes.Simultanous)
-              await synth.playSimultanousInterval(scorer.current.currentNote, scorer.current.currentInterval, 8);
-            else
-              await synth.playInterval(scorer.current.currentNote, scorer.current.currentInterval, 8)
-          }}>
+          <button onClick={async () => playNote()}>
             Play
           </button>
           <IntervalSelectionMatrix clickButton={(n: number) => { checkAnswer(n) }} />
         </div>
-      </div >
+      </div>
       <div className="settings-area">
         <Settings settings={setting} onChange={setSettings} />
       </div>

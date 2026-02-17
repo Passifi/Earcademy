@@ -1,7 +1,8 @@
 export class RandomGenerator {
 
   static randomValueFromSet(values: any[]) {
-    return values[Math.floor(Math.random() * values.length)]
+    var valueIndex = Math.floor(Math.random() * values.length);
+    return values[valueIndex];
   }
 
   static randomValue(min: number, max: number) {
