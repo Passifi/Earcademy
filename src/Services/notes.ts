@@ -2,6 +2,8 @@ const notes = ["C", "Db", "D", "Eb", "E",
   "F", "Gb", "G", "Ab", "A", "Bb", "B"
 ]
 
+const Octave = 12;
+
 export class Note {
   baseNote: number;
   octave: number;
@@ -17,12 +19,12 @@ export class Note {
     let octave = 0
     let newNote = this.baseNote
     newNote += interval
-    if (newNote >= 12) {
-      newNote = newNote - 12
+    if (newNote >= Octave) {
+      newNote = newNote - Octave
       octave = 1
     }
     else if (newNote < 0) {
-      newNote = 12 + newNote
+      newNote = Octave + newNote
       octave = -1
     }
     return new Note(newNote, this.octave + octave)

@@ -3,12 +3,20 @@ import { Note } from "./notes";
 import { Difficulties, Setting } from "../classes/Setting";
 export class Guess {
   interval: number;
-  correct: boolean;
+  guess: number;
   mode: number;
-  constructor(interval: number, correct: boolean) {
-    this.interval = interval;
-    this.correct = correct
+  constructor(interval: number, guess: number) {
+    this.interval = Math.abs(interval);
+    this.guess = Math.abs(guess);
     this.mode = Modes.IntervalUp;
+  }
+
+  get correct() {
+    return this.interval === this.guess
+  }
+
+  get difference() {
+    return this.interval - this.guess
   }
 
 }
@@ -24,8 +32,8 @@ export const Modes = {
 }
 
 const intervalsPerDifficulty: Record<number, any[]> = {
-  [Difficulties.Easy]: [0, 3, 7, 12],
-  [Difficulties.Medium]: [0, 2, 3, 7, 9, 12],
+  [Difficulties.Easy]: [0, 4, 7, 12],
+  [Difficulties.Medium]: [0, 3, 4, 7, 9, 12],
   [Difficulties.Hard]: [0, 1, 2, 3, 4, 5, 7, 9, 12],
   [Difficulties.Beethoven]: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 12],
   [Difficulties.Mozart]: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
@@ -69,19 +77,18 @@ export class Scorer {
   }
 
   checkAnswer(answer: number) {
-    const currentGuess = new Guess(Math.abs(this.currentInterval), Math.abs(this.currentInterval) === answer)
+    const currentGuess = new Guess(this.currentInterval, answer)
     this.guesses.push(currentGuess)
 
     if (currentGuess.correct) {
       this.publicGuesses = [...this.guesses]
       this.generateNewChallenge = true
+      this.intervalAccu++;
+      if (this.intervalAccu == checkInterval && this.dynamicDifficulty)
+        this.calibrateDifficulty();
     }
 
-    this.intervalAccu++;
-    if (this.intervalAccu == checkInterval && this.dynamicDifficulty)
-      this.calibrateDifficulty();
-    var diff = Math.abs(this.currentInterval) - answer
-    return { correct: this.guesses.at(-1)!.correct, errorSize: diff }
+    return { correct: currentGuess.correct, errorSize: currentGuess.difference }
   }
 
   generateChallenge() {

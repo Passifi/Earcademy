@@ -17,7 +17,6 @@ function App() {
   const [setting, setSetting] = useState<Setting>(new Setting(false, Difficulties.Easy, "Pascal"))
   const [score, setScore] = useState(scorer.current.getScore())
 
-  // setup based on SettingsData
   useEffect(() =>
     synth.setADSR({ attack: 0.01, decay: 0.5, sustain: 0.3, release: 2.9 }), []);
 
